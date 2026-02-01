@@ -1,6 +1,7 @@
 import express from "express";
 import authenticate from "../../middlewares/authenticate.js";
 import authorizeRoles from "../../middlewares/authorizeRoles.js";
+import upload from "../../utils/multer.js";
 import {
   createComplaint,
   myComplaints,
@@ -10,7 +11,12 @@ import {
 
 const router = express.Router();
 
-router.post("/", authenticate, createComplaint);
+router.post(
+  "/",
+  authenticate,
+  upload.array("attachments"),
+  createComplaint
+);
 router.get("/my", authenticate, myComplaints);
 
 router.get("/admin", authenticate, authorizeRoles("admin", "operator"), allComplaints);

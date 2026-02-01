@@ -5,6 +5,7 @@ import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import routes from "./routes/index.js";
 
+
 const app = express();
 
 app.use(cors({ origin: true, credentials: true }));

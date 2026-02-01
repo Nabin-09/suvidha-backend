@@ -1,21 +1,22 @@
-const express = require('express');
-const cors = require('cors');
-const helmet = require('helmet');
-const cookieParser = require('cookie-parser');
-const { errorHandler } = require('./middlewares/errorMiddleware');
+import express from "express";
+import cors from "cors";
+import helmet from "helmet";
+import morgan from "morgan";
+import cookieParser from "cookie-parser";
+import routes from "./routes/index.js";
 
 const app = express();
 
-// Security & Base Middlewares 
+app.use(cors({ origin: true, credentials: true }));
 app.use(helmet());
-app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+app.use(morgan("dev"));
 app.use(express.json());
 app.use(cookieParser());
 
-// Health Check Route [cite: 64]
-app.get('/health', (req, res) => res.status(200).json({ status: 'OK' }));
+app.use("/api/v1", routes);
 
-// Global Error Handler 
-app.use(errorHandler);
+app.get("/api/v1/health", (req, res) => {
+  res.json({ status: "OK", service: "SUVIDHA Backend" });
+});
 
-module.exports = app;
+export default app;

@@ -6,17 +6,24 @@ import Bill from "../src/modules/bill/bill.model.js";
 dotenv.config();
 await mongoose.connect(process.env.MONGO_URI);
 
-const admin = await User.create({
-  phone: "9999999999",
-  role: "admin"
-});
+// ✅ UPSERT admin user
+const admin = await User.findOneAndUpdate(
+  { phone: "9999999999" },
+  { role: "admin" },
+  { new: true, upsert: true }
+);
 
-await Bill.create({
-  userId: admin._id,
-  serviceType: "water",
-  amount: 300,
-  dueDate: new Date()
-});
+// ✅ Seed bill only if none exists
+const billExists = await Bill.findOne({ userId: admin._id });
 
-console.log("✅ Admin & bill seeded");
+if (!billExists) {
+  await Bill.create({
+    userId: admin._id,
+    serviceType: "water",
+    amount: 300,
+    dueDate: new Date()
+  });
+}
+
+console.log("✅ Seed complete (safe to run multiple times)");
 process.exit();

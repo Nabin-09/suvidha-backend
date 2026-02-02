@@ -14,7 +14,7 @@ export const initiatePayment = async (req, res) => {
   });
 
   const payment = await Payment.create({
-   
+    userId: req.user.userId,
     billId: bill._id,
     amount: bill.amount,
     razorpayOrderId: order.id

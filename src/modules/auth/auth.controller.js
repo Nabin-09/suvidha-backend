@@ -25,11 +25,12 @@ export const verifyOtpAndLogin = async (req, res) => {
     process.env.JWT_SECRET,
     { expiresIn: "1d" }
   );
+res.cookie("token", token, {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
+});
 
-  res.cookie("token", token, {
-    httpOnly: true,
-    sameSite: "lax"
-  });
 
   res.json({ success: true, user });
 };
